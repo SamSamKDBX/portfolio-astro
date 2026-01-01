@@ -1,0 +1,19 @@
+---
+import Social from "./Social.astro";
+const { username } = Astro.props;
+---
+
+<style>
+    footer {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+</style>
+
+<footer>
+    <p>&copy; 2026 SamSamKDBX - Portfolio</p>
+    <p>Tous droits réservés</p>
+    <Social platform="github" username="SamSamKDBX" />
+    <Social platform="instagram" username="SamSamKDBX" />
+</footer>
