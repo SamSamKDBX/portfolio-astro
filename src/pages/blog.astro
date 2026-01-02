@@ -1,38 +1,39 @@
 ---
 import "../styles/global.css";
-import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
 
-const pageTitle = "Blog";
+const pageTitle = "SamSamKDBX";
+const pageSubTitle = "Blog";
 ---
 
 <html lang="en">
-    <!-- Head -->
-    <head>
-        <meta charset="utf-8" />
-        <link rel="icon" type="image/svg+xml" href="/logo.jpg" />
-        <meta name="viewport" content="width=device-width" />
-        <meta name="generator" content={Astro.generator} />
-        <title>{pageTitle}</title>
-        <style>
-            h1 {
-                color: purple;
-                font-size: 4rem;
-            }
-        </style>
-    </head>
-    <!-- Body -->
-    <body>
-        <Navigation />
+  <!-- Head -->
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.jpg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <style>
+      h1 {
+        color: purple;
+        font-size: 4rem;
+      }
+    </style>
+  </head>
+  <!-- Body -->
+  <body>
+    <Header pageTitle={pageTitle} pageSubTitle={pageSubTitle} />
 
-        <!-- Content -->
-        <h2>Quelques articles que j'ai écrit</h2>
-        <h2>... ou pas encore !</h2>
-        <ul>
-            <li><a href="/posts/post-1/">Article 1</a></li>
-            <li><a href="/posts/post-2/">Article 2</a></li>
-            <li><a href="/posts/post-3/">Article 3</a></li>
-        </ul>
-        <Footer username="SamSamKDBX" />
-    </body>
+    <!-- Content -->
+    <h2>Quelques articles que j'ai écrit</h2>
+    <h2>... ou pas encore !</h2>
+    <ul>
+      <li><a href="/posts/post-1/">Article 1</a></li>
+      <li><a href="/posts/post-2/">Article 2</a></li>
+      <li><a href="/posts/post-3/">Article 3</a></li>
+    </ul>
+    <Footer username="SamSamKDBX" />
+  </body>
 </html>

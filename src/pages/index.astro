@@ -1,9 +1,9 @@
 ---
 import "../styles/global.css";
-import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
 
-const pageTitle = "Portfolio SamSamKDBX";
+const pageTitle = "Acceuil";
 ---
 
 <html lang="en">
@@ -15,8 +15,8 @@ const pageTitle = "Portfolio SamSamKDBX";
 		<title>{pageTitle}</title>
 	</head>
 	<body>
-		<Navigation />
-		<h1>{pageTitle}</h1>
+        <Header pageTitle="Bienvenue sur mon site web !" />
+		<div class="h-full bg-gray-400"><p>Test</p></div>
 		<Footer username="SamSamKDBX" />
 	</body>
 </html>

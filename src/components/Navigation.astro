@@ -1,7 +1,13 @@
 ---
-
+import "../styles/global.css";
+import Link from "./Link.astro";
 ---
 
-<a href="/">Accueil</a>
-<a href="/about/">À propos</a>
-<a href="/blog/">Mon blog</a>
+<nav class="row-span-3">
+  <div class="h-full items-center place-items-center grid grid-flow-col">
+    <Link href="/" displayName="Accueil" />
+    <Link href="/posts/post-1/" displayName="À propos" />
+    <Link href="/blog/" displayName="Mon blog" />
+    <Link href="/projets/" displayName="Mes projets" />
+  </div>
+</nav>

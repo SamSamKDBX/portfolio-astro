@@ -1,0 +1,11 @@
+---
+import "../styles/global.css";
+const { displayName, href } = Astro.props;
+---
+
+<a
+  class="align-middle font-bold hover:text-orange-500 focus:text-blue-500"
+  href={href}
+>
+  {displayName}
+</a>

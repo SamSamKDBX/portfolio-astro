@@ -1,0 +1,19 @@
+---
+import "../styles/global.css";
+import Navigation from "./Navigation.astro";
+const { pageTitle } = Astro.props;
+---
+
+<style>
+  header {
+    padding: 1em;
+  }
+</style>
+
+<header class="bg-purple-500">
+  <div class="grid grid-flow-col grid-rows-3 gap-0.5">
+    <h1 class="row-span-2">SamSamKDBX</h1>
+    <h2 class="row-span-1">{pageTitle}</h2>
+    <Navigation />
+  </div>
+</header>
