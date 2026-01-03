@@ -1,25 +1,59 @@
 @import "tailwindcss";
 
+/* ======================
+   Design tokens globales
+   ====================== */
 :root {
-  /* Équivalent Tailwind bg-purple-500 (#a855f7) */
-  --site-chrome-bg: #a855f7;
+  /* Couleurs du thème */
+  --primary-bg: #5d7fec;
+  --secondary-bg: #9C06C5;
+  --primary-fg: black;
+  --fg-focus: oklch(62.3% 0.214 259.815);
+
+  /* Hover générique */
+  --ui-hover-scale: 1.02;
+  --ui-hover-duration: 200ms;
+  --ui-hover-ease: cubic-bezier(0, 0, 0.2, 1);
+  --ui-hover-bg: rgba(55, 65, 81, 0.5);
+  --ui-hover-fg: rgba(255, 255, 255, 0.7);
+  --ui-hover-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+
+  /* Carrousel */
+  --carousel-size: 15rem;
+  --carousel-side-opacity: 0.7;
+  --carousel-side-scale: 0.92;
+  --carousel-hover-scale: 1.05;
 }
 
-html,
-body {
-  height: auto;
+html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
+  background: var(--primary-bg);
 }
 
 body {
+  background: transparent;
+  height: auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
+header {
+  padding: 1em;
+  background: var(--secondary-bg);
+  color: var(--primary-fg);
+}
+
+section {
+  background: var(--secondary-bg);
+  color: var(--primary-fg);
+}
+
 footer {
   margin-top: auto;
+  background: var(--secondary-bg);
+  color: var(--primary-fg);
 }
 
 h1 {
@@ -27,68 +61,51 @@ h1 {
   font-weight: bold;
 }
 
-#link-hover-effect {
-  /* rounded-lg */
-  border-radius: 0.5rem;
-
-  /* p-1 */
-  padding: 0.25rem;
-
-  /* transform-gpu */
-  transform: translateZ(0);
-
-  /* will-change-transform */
-  will-change: transform;
-
-  /* transition-transform duration-200 ease-out */
-  transition-property: transform;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-}
-
-/* hover:scale-110 */
-#link-hover-effect:hover {
-  transform: scale(1.05);
-}
-
-/* hover:bg-gray-700/50 (approx) */
-#link-hover-effect:hover {
-  background-color: rgba(55, 65, 81, 0.5);
-}
-
-/* focus-visible:scale-110 */
-#link-hover-effect:focus-visible {
-  transform: scale(1.10);
-}
-
+/*
+  ################
+  # Hover effect #
+  ################
+*/
 .ui-hover {
-  /* Valeurs par défaut, surchargeables par élément */
-  --hover-scale: 1.06;
-  --hover-duration: 200ms;
-  --hover-ease: cubic-bezier(0, 0, 0.2, 1);
-
   transform: translateZ(0) scale(1);
   will-change: transform;
 
   transition-property: transform, background-color;
-  transition-duration: var(--hover-duration);
-  transition-timing-function: var(--hover-ease);
+  transition-duration: var(--ui-hover-duration);
+  transition-timing-function: var(--ui-hover-ease);
 }
 
 .ui-hover:hover,
 .ui-hover:focus-visible {
-  transform: translateZ(0) scale(var(--hover-scale));
+  transform: translateZ(0) scale(var(--ui-hover-scale));
+  text-shadow: var(--ui-hover-shadow);
 }
 
-/* Optionnel : n’applique un background au hover QUE si tu ajoutes cette classe */
+.ui-hover:focus {
+  color: var(--fg-focus);
+}
+
+.ui-hover:hover {
+  color: var(--ui-hover-fg) !important;
+  text-shadow: var(--ui-hover-shadow);
+}
+
+.ui-hover > section {
+  color: inherit;
+}
+
+/*
+  ####################
+  # Hover background #
+  ####################
+*/
 .ui-hover-bg {
-  /* rounded-lg */
   border-radius: 0.5rem;
 }
 
 .ui-hover-bg:hover,
 .ui-hover-bg:focus-visible {
-  background-color: var(--hover-bg, rgba(55, 65, 81, 0.5));
+  background-color: var(--ui-hover-bg);
 }
 
 @media (prefers-reduced-motion: reduce) {

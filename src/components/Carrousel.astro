@@ -1,5 +1,11 @@
 ---
-export type CarouselItem = {
+/**
+ * Décrit un item du carrousel.
+ * - src/alt : image
+ * - title/subTitle/description : texte affiché sous les images (lié à l’item actif)
+ * - href : lien ouvert quand l’item actif (au centre) est cliqué
+ */
+export type carrouselItem = {
   src: string;
   alt?: string;
   title: string;
@@ -8,30 +14,51 @@ export type CarouselItem = {
   href: string;
 };
 
+/**
+ * Props du composant.
+ * - items : liste d’items à afficher
+ * - initialIndex : index de départ (par défaut 0)
+ */
 type Props = {
-  items: CarouselItem[];
+  items: carrouselItem[];
   initialIndex?: number;
 };
 
 const { items, initialIndex = 0 } = Astro.props;
 
+/**
+ * Petit garde-fou : on évite d’afficher un carrousel vide (sinon le JS/CSS n’a pas de sens).
+ */
 if (!items?.length) {
-  throw new Error("[Carrousel] La prop `items` est requise et doit contenir au moins 1 élément.");
+  throw new Error(
+    "[Carrousel] La prop `items` est requise et doit contenir au moins 1 élément."
+  );
 }
 ---
 
+<!--
+  Conteneur racine du carrousel.
+  data-items : on sérialise les items en JSON pour que le script inline puisse les lire côté client.
+  data-initial-index : index de départ côté JS.
+  tabindex="0" : permet de donner le focus au carrousel (utile pour l’accessibilité / focus-visible).
+-->
 <div
-  class="carousel"
-  data-carousel
+  class="carrousel"
+  data-carrousel
   data-items={JSON.stringify(items)}
   data-initial-index={String(initialIndex)}
   role="region"
   aria-label="Carrousel"
   tabindex="0"
 >
-  <div class="carousel__viewport" aria-live="polite">
+  <!--
+    Zone d’affichage des 3 images (prev / active / next).
+    Les slides sont positionnées en absolute, donc elles se chevauchent.
+  -->
+  <div class="carrousel__viewport" aria-live="polite">
+    <!-- Bouton "Précédent": le script cherche [data-prev] et décrémente l’index -->
     <button
-      class="carousel__btn carousel__btn--prev"
+      class="carrousel__btn carrousel__btn--prev"
       type="button"
       data-prev
       aria-label="Précédent"
@@ -39,8 +66,9 @@ if (!items?.length) {
       ‹
     </button>
 
+    <!-- Bouton "Suivant": le script cherche [data-next] et incrémente l’index -->
     <button
-      class="carousel__btn carousel__btn--next"
+      class="carrousel__btn carrousel__btn--next"
       type="button"
       data-next
       aria-label="Suivant"
@@ -48,65 +76,74 @@ if (!items?.length) {
       ›
     </button>
 
-    {items.map((it, i) => (
-      <a
-        class="carousel__slide"
-        href={it.href}
-        data-slide
-        data-index={i}
-        aria-label={it.title}
-      >
-        <img
-          class="carousel__img"
-          src={it.src}
-          alt={it.alt ?? it.title}
-          loading="lazy"
-          draggable="false"
-        />
-      </a>
-    ))}
+    <!--
+      Chaque item est un <a> (slide) : si la slide est ACTIVE, cliquer navigue vers href.
+      Si la slide est PREV/NEXT, on intercepte le clic pour la rendre active (voir JS).
+    -->
+    {
+      items.map((it, i) => (
+        <a
+          class="carrousel__slide"
+          href={it.href}
+          data-slide
+          data-index={i}
+          aria-label={it.title}
+        >
+          <img
+            class="carrousel__img"
+            src={it.src}
+            alt={it.alt ?? it.title}
+            loading="lazy"
+            draggable="false"
+          />
+        </a>
+      ))
+    }
   </div>
 
-  <div class="carousel__meta">
-    <h3 class="carousel__title" data-title></h3>
-    <p class="carousel__subtitle" data-subtitle></p>
-    <p class="carousel__desc" data-desc></p>
+  <!--
+    Texte associé à l’item actif (titre / sous-titre / description).
+    Le script met à jour ces éléments via data-title / data-subtitle / data-desc.
+  -->
+  <div class="carrousel__meta">
+    <h3 class="carrousel__title" data-title></h3>
+    <p class="carrousel__subtitle" data-subtitle></p>
+    <p class="carrousel__desc" data-desc></p>
   </div>
 </div>
 
 <style>
-  .carousel {
+  .carrousel {
     width: 100%;
-    height: 100%;              /* <-- remplit la colonne droite */
-    user-select: none;
+    height: 100%; /* remplit la colonne droite de ta PreviewSection */
 
-    display: flex;             /* <-- viewport + texte en colonne */
-    flex-direction: column;
-    justify-content: center;   /* <-- centre verticalement dans la section */
-    gap: 0.75rem;
-
+    user-select: none; /* évite de sélectionner du texte en cliquant/glissant */
     outline: none;
+
+    /* Layout vertical : viewport (images) + meta (texte) */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centre verticalement dans la zone droite */
+    gap: 0.75rem;
   }
 
-  .carousel__viewport {
-    position: relative;
-    height: 15rem;
+  .carrousel__viewport {
+    position: relative; /* nécessaire pour positionner boutons/slides en absolute */
+    height: 100%; /* taille FIXE comme demandé */
     width: 100%;
-    overflow: hidden;
-    display: grid;
-    place-items: center;
+    overflow: hidden; /* masque les débordements des images */
   }
 
-  /* Boutons (AU-DESSUS des slides) */
-  .carousel__btn {
+  /* =========================
+     Boutons prev/next
+     ========================= */
+  .carrousel__btn {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
-    z-index: 10; /* <-- clé: devant les images */
+    z-index: 10; /* IMPORTANT: au-dessus des slides (sinon invisible) */
 
     width: 2.25rem;
     height: 2.25rem;
-    border-radius: 9999px;
 
     border: 1px solid rgba(255, 255, 255, 0.35);
     background: rgba(0, 0, 0, 0.35);
@@ -116,69 +153,91 @@ if (!items?.length) {
     place-items: center;
 
     cursor: pointer;
-    pointer-events: auto;
-
-    transition: background-color 160ms ease-out, transform 160ms ease-out;
+    pointer-events: auto; /* garantit que le bouton capte bien les clics */
+    transition:
+      background-color 160ms ease-out,
+      transform 160ms ease-out;
   }
 
-  .carousel__btn--prev { left: 0.5rem; }
-  .carousel__btn--next { right: 0.5rem; }
+  /* Positionnement à gauche/droite dans le viewport */
+  .carrousel__btn--prev {
+    left: 0.5rem;
+  }
+  .carrousel__btn--next {
+    right: 0.5rem;
+  }
 
-  .carousel__btn:hover {
+  .carrousel__btn:hover {
     background: rgba(0, 0, 0, 0.55);
-    transform: translateY(-50%) scale(1.05);
+    transform: scale(1.05);
   }
 
-  .carousel__btn:focus-visible {
+  .carrousel__btn:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.85);
     outline-offset: 2px;
   }
 
-  /* Slides: se chevauchent */
-  .carousel__slide {
+  /* ===============
+     Slides (images)
+     =============== */
+
+  .carrousel__slide {
     position: absolute;
     top: 50%;
     left: 50%;
 
-    width: 15rem;
+    width: 15rem; /* taille FIXE */
     height: 15rem;
 
-    transform: translate(-50%, -50%) scale(0.9);
+    /* état par défaut : invisible + non cliquable.
+       Ça évite les "clics fantômes" sur les slides cachées. */
     opacity: 0;
+    pointer-events: none;
     z-index: 1;
 
-    pointer-events: none;
+    /* transform de base (centrée) : sera remplacée par is-active/is-prev/is-next */
+    transform: translate(-50%, -50%) scale(0.9);
+
     transition:
       transform 220ms cubic-bezier(0, 0, 0.2, 1),
       opacity 220ms cubic-bezier(0, 0, 0.2, 1);
   }
 
-  .carousel__slide.is-active {
+  /* Slide active (au centre, devant) */
+  .carrousel__slide.is-active {
     opacity: 1;
     z-index: 3;
-    pointer-events: auto;
+    pointer-events: auto; /* cliquable (et navigue vers le href) */
     transform: translate(-50%, -50%) scale(1);
   }
 
-  .carousel__slide.is-prev {
+  /* Slide précédente (à gauche, en retrait) */
+  .carrousel__slide.is-prev {
     opacity: 0.7;
     z-index: 2;
-    pointer-events: auto;
+    pointer-events: auto; /* cliquable (mais JS intercepte pour recentrer) */
     transform: translate(calc(-50% - 55%), -50%) scale(0.92);
   }
 
-  .carousel__slide.is-next {
+  /* Slide suivante (à droite, en retrait) */
+  .carrousel__slide.is-next {
     opacity: 0.7;
     z-index: 2;
-    pointer-events: auto;
+    pointer-events: auto; /* cliquable (mais JS intercepte pour recentrer) */
     transform: translate(calc(-50% + 55%), -50%) scale(0.92);
   }
 
-  /* Hover scale 1.05 */
-  .carousel__img {
+  /* =========================
+     Hover scale demandé (1.05)
+     =========================
+     On l'applique à l'IMG (et pas à la slide),
+     car la slide a déjà un transform de positionnement.
+     Si on mettait un hover:scale sur la slide, on écraserait/combinerait mal les transforms.
+  */
+  .carrousel__img {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 95%;
     border-radius: 0.5rem;
     object-fit: cover;
 
@@ -186,41 +245,43 @@ if (!items?.length) {
     transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
   }
 
-  .carousel__slide.is-active:hover .carousel__img,
-  .carousel__slide.is-prev:hover .carousel__img,
-  .carousel__slide.is-next:hover .carousel__img,
-  .carousel__slide.is-active:focus-visible .carousel__img,
-  .carousel__slide.is-prev:focus-visible .carousel__img,
-  .carousel__slide.is-next:focus-visible .carousel__img {
+  .carrousel__slide.is-active:hover .carrousel__img,
+  .carrousel__slide.is-prev:hover .carrousel__img,
+  .carrousel__slide.is-next:hover .carrousel__img,
+  .carrousel__slide.is-active:focus-visible .carrousel__img,
+  .carrousel__slide.is-prev:focus-visible .carrousel__img,
+  .carrousel__slide.is-next:focus-visible .carrousel__img {
     transform: scale(1.05);
   }
 
-  .carousel__meta {
+  /* Texte centré sous les images */
+  .carrousel__meta {
     text-align: center;
   }
 
-  .carousel__title {
+  .carrousel__title {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 700;
   }
 
-  .carousel__subtitle {
+  .carrousel__subtitle {
     margin: 0.25rem 0 0;
     opacity: 0.85;
     font-style: italic;
   }
 
-  .carousel__desc {
+  .carrousel__desc {
     margin: 0.5rem auto 0;
     max-width: 60ch;
     opacity: 0.9;
   }
 
+  /* Accessibilité: si l’utilisateur préfère moins d’animations */
   @media (prefers-reduced-motion: reduce) {
-    .carousel__slide,
-    .carousel__img,
-    .carousel__btn {
+    .carrousel__slide,
+    .carrousel__img,
+    .carrousel__btn {
       transition: none;
     }
   }
@@ -228,24 +289,44 @@ if (!items?.length) {
 
 <script is:inline>
   (() => {
-    const roots = Array.from(document.querySelectorAll("[data-carousel]"));
+    /**
+     * On initialise TOUS les carrousels de la page
+     * (tu en as 2 dans index.astro), pas seulement le premier.
+     */
+    const roots = Array.from(document.querySelectorAll("[data-carrousel]"));
     if (!roots.length) return;
 
+    /**
+     * mod : permet de boucler proprement (quand on dépasse 0 ou n-1).
+     * Exemple: mod(-1, 4) => 3
+     */
     const mod = (n, m) => ((n % m) + m) % m;
 
     roots.forEach((root) => {
+      // On récupère les items sérialisés dans data-items.
       const items = JSON.parse(root.getAttribute("data-items") || "[]");
+
+      // Toutes les slides <a>
       const slides = Array.from(root.querySelectorAll("[data-slide]"));
 
+      // Boutons prev/next
       const prevBtn = root.querySelector("[data-prev]");
       const nextBtn = root.querySelector("[data-next]");
 
+      // Éléments texte à mettre à jour
       const titleEl = root.querySelector("[data-title]");
       const subtitleEl = root.querySelector("[data-subtitle]");
       const descEl = root.querySelector("[data-desc]");
 
+      // Index actif courant
       let index = Number(root.getAttribute("data-initial-index") || 0) || 0;
 
+      /**
+       * render() :
+       * - calcule prev/next
+       * - applique les classes is-prev/is-active/is-next
+       * - met à jour les textes sous le carrousel
+       */
       function render() {
         const n = items.length;
         if (!n) return;
@@ -267,11 +348,21 @@ if (!items?.length) {
         if (descEl) descEl.textContent = it?.description ?? "";
       }
 
+      /**
+       * go(delta) :
+       * delta = +1 => slide suivante
+       * delta = -1 => slide précédente
+       */
       function go(delta) {
         index = mod(index + delta, items.length);
         render();
       }
 
+      /**
+       * Clic sur une slide :
+       * - si ce n’est PAS la slide active => on empêche la navigation et on recentre
+       * - si c’est la slide active => on laisse le lien <a> naviguer normalement
+       */
       slides.forEach((el, i) => {
         el.addEventListener("click", (e) => {
           if (i !== index) {
@@ -282,6 +373,7 @@ if (!items?.length) {
         });
       });
 
+      // Navigation via boutons
       prevBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         go(-1);
@@ -292,6 +384,7 @@ if (!items?.length) {
         go(+1);
       });
 
+      // Premier rendu
       render();
     });
   })();
