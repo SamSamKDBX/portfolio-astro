@@ -12,8 +12,13 @@ const { pageTitle } = Astro.props;
 
 <header class="bg-purple-500">
   <div class="grid grid-flow-col grid-rows-3 gap-0.5">
-    <h1 class="row-span-2">SamSamKDBX</h1>
-    <h2 class="row-span-1">{pageTitle}</h2>
+    <a
+      href="/"
+      class="size-min row-span-2 p-1 text-4xl font-medium ui-hover ui-hover-bg"
+    >
+      SamSamKDBX
+    </a>
+    <h2 class="row-span-1 ml-2">{pageTitle}</h2>
     <Navigation />
   </div>
 </header>

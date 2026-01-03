@@ -1,9 +1,15 @@
 @import "tailwindcss";
 
+:root {
+  /* Équivalent Tailwind bg-purple-500 (#a855f7) */
+  --site-chrome-bg: #a855f7;
+}
 
 html,
 body {
-  height: 100%;
+  height: auto;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -19,4 +25,74 @@ footer {
 h1 {
   font-size: 2rem;
   font-weight: bold;
+}
+
+#link-hover-effect {
+  /* rounded-lg */
+  border-radius: 0.5rem;
+
+  /* p-1 */
+  padding: 0.25rem;
+
+  /* transform-gpu */
+  transform: translateZ(0);
+
+  /* will-change-transform */
+  will-change: transform;
+
+  /* transition-transform duration-200 ease-out */
+  transition-property: transform;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* hover:scale-110 */
+#link-hover-effect:hover {
+  transform: scale(1.05);
+}
+
+/* hover:bg-gray-700/50 (approx) */
+#link-hover-effect:hover {
+  background-color: rgba(55, 65, 81, 0.5);
+}
+
+/* focus-visible:scale-110 */
+#link-hover-effect:focus-visible {
+  transform: scale(1.10);
+}
+
+.ui-hover {
+  /* Valeurs par défaut, surchargeables par élément */
+  --hover-scale: 1.06;
+  --hover-duration: 200ms;
+  --hover-ease: cubic-bezier(0, 0, 0.2, 1);
+
+  transform: translateZ(0) scale(1);
+  will-change: transform;
+
+  transition-property: transform, background-color;
+  transition-duration: var(--hover-duration);
+  transition-timing-function: var(--hover-ease);
+}
+
+.ui-hover:hover,
+.ui-hover:focus-visible {
+  transform: translateZ(0) scale(var(--hover-scale));
+}
+
+/* Optionnel : n’applique un background au hover QUE si tu ajoutes cette classe */
+.ui-hover-bg {
+  /* rounded-lg */
+  border-radius: 0.5rem;
+}
+
+.ui-hover-bg:hover,
+.ui-hover-bg:focus-visible {
+  background-color: var(--hover-bg, rgba(55, 65, 81, 0.5));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-hover {
+    transition: none;
+  }
 }

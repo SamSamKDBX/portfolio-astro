@@ -1,0 +1,31 @@
+---
+type Props = {
+  href: string;
+  title: string;
+  subTitle?: string;
+  description?: string;
+  hoverScale?: number;
+};
+
+const { href, title, subTitle, description, hoverScale = 1.02 } = Astro.props;
+---
+
+<a href={href} class="ui-hover" style={`--hover-scale: ${hoverScale};`}>
+  <section
+    class="grid grid-cols-2 m-5 h-100 rounded-md bg-purple-800 overflow-hidden"
+  >
+    <div class="p-2">
+      <div class="h-1/3">
+        <h1>{title}</h1>
+        {subTitle && <h2 class="pl-1 italic">{subTitle}</h2>}
+      </div>
+
+      {description && <p class="size-full wrap-anywhere">{description}</p>}
+    </div>
+
+    <!-- Partie droite remplaçable -->
+    <div class="h-full w-full">
+      <slot name="right" />
+    </div>
+  </section>
+</a>

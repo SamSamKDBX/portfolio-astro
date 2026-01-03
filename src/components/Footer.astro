@@ -1,14 +1,47 @@
 ---
 import "../styles/global.css";
-import Social from "./Social.astro";
-const { username } = Astro.props;
 ---
 
 <footer class="flex flex-col text-center bg-blue-500 gap-2 p-2">
   <p>2026 SamSamKDBX</p>
   <p>&copy; Tous droits réservés</p>
   <div class="flex flex-row justify-center items-center gap-2">
-    <Social platform="github" username={username} />
-    <Social platform="instagram" username={username} />
+    <!-- GitHub -->
+    <a
+      class="size-10! p-1 ui-hover ui-hover-bg"
+      href="https://www.github.com/samsamkdbx"
+      target="_blank"
+    >
+      <img src="/src/assets/github-mark/github-mark.svg" />
+    </a>
+
+    <!-- LinkedIn -->
+    <a
+      class="size-10! p-1 ui-hover ui-hover-bg"
+      href="https://www.linkedin.com/in/samuel-bour-samsamkdbx/"
+    >
+      <img src="/src/assets/linkedin-light.svg" />
+    </a>
+
+    <!-- Email -->
+    <a class="size-10! p-1 ui-hover ui-hover-bg" href="/">
+      <img src="/src/assets/mail-light.svg" />
+    </a>
+
+    <!-- Mastodon -->
+    <a
+      class="size-10! p-1 ui-hover ui-hover-bg"
+      href="https://shelter.moe/@SamSamKDBX"
+    >
+      <img src="/src/assets/mastodon-light.svg" />
+    </a>
+
+    <!-- Instagram -->
+    <a
+      class="size-10! p-1 ui-hover ui-hover-bg"
+      href="https://instagram.com/SamSamKDBX"
+    >
+      <img src="/src/assets/instagram.svg" />
+    </a>
   </div>
 </footer>
